@@ -69,9 +69,6 @@ ubx_local = a(ia_bnd+64)
 uby_local = a(ia_bnd+65)
 ubz_local = a(ia_bnd+66)
 
-!print*, 'stiff_norm= ', stiff_norm, 'stiff_tan= ', stiff_tan, &
-!&      'mstiff_norm= ', mstiff_norm, 'mstiff_tan= ', mstiff_tan
-
 !---read normal vectors of particles---------
 do i = 1, 3
 wrot1(i) = a(iab1+12+i)
@@ -93,6 +90,7 @@ do i=1, 3
  np1p2 (i) = x_rel_global(i)/dis_p1p2
 enddo
 
+! delta_n for normal bond force
 delta_n = dis_p1p2 - lbond
 
  if (delta_n .gt. del(1)) then
@@ -104,7 +102,7 @@ vcn_global_scaler =  vc_rel_global(1)*np1p2(1) + vc_rel_global(2)*np1p2(2) &
 &                    + vc_rel_global(3)*np1p2(3)
 
  do i=1, 3
-    vcn_rel_global (i) = vcn_global_scaler*np1p2(i)
+vcn_rel_global (i) = vcn_global_scaler*np1p2(i)
 vct_rel_global (i) = vc_rel_global (i) -  vcn_rel_global (i)
  enddo
 
@@ -126,6 +124,7 @@ endif
 
 enddo
 
+! Shape memory alloy related parameters changes with temperature. 
 SigmaMs=Crisigma1(Temperature)
 SigmaMf=Crisigma2(Temperature)
 
@@ -148,14 +147,15 @@ ipath (1) = ia(ia_bnd+38)
 ipath (2) = ia(ia_bnd+39)
 
 
-
 if( (Temperature .lt. As) .or. (Temperature .gt. Af) .or. (Temperature .ge. As .and. Temperature .le. Af .and. Rotc .eq. 0 ) )then
 a(ia_bnd+70) = 0
 a(ia_bnd+71) = 0
 end if
 
+! Internal bending moment is updated and the loading and unloading path is checked for switching
+! when the temperature rises within the phase transition temperature range.
 if( Temperature .ge. As .and. Temperature .lt. Af .and. (Rotc .gt. 0.0)   )then
-
+! in the elastic range
 if ((ipath (1).eq.1) .and. (ipath (2).eq.1)) then
 
 if( abs( a(ia_bnd+48) ) .le.theta_elastic ) then
@@ -171,12 +171,13 @@ ipath(1) = 2
 end if
 
 a(ia_bnd+46)=a(ia_bnd+46)+dmt
-
  a(ia_bnd+14) = a(ia_bnd+46)*a(ia_bnd+40)
  a(ia_bnd+15) = a(ia_bnd+46)*a(ia_bnd+41)
  a(ia_bnd+16) = a(ia_bnd+46)*a(ia_bnd+42)
 
 else
+
+!Beyond the elastic range, update the bending moment and path along the two main axes.
 do  i =1, 2
 
 if (ipath(i) .eq. 1) then
@@ -217,7 +218,7 @@ endif
 enddo
 endif
 
-!--------decrease temperature----------------
+!Update bond moments and path types when temperature decreases
 
 elseif (Temperature .ge. As .and. Temperature .lt. Af .and. (Rotc .lt. 0.0)   )then
 
