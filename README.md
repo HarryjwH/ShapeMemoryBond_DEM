@@ -7,6 +7,5 @@ For inquiries or collaboration, please contact Professor Yu Guo's Lab at Zhejian
 
 References:
 
-[1] Equations (11)-(23) in Supplementary Materials of the article: Han, J. et al. Thermo-responsive jamming by particle shape change, Nature Communications, (2025), accepted in principle.
-
+[1] Equations (11)-(23) in Supplementary Materials of the article: Han, J., Wang, P., Guo, Y. et al. Thermo-responsive jamming by particle shape change. Nat. Commun. 16, 2303 (2025). 
 [2] Guo, Y. et al. Discrete element method models of elastic and elastoplastic fiber assemblies. AIChE J. 67, e17296 (2021).
